@@ -139,13 +139,13 @@
     }
     // 月 or 太陽
     if (sky === 'night' && code < 3) {
-      s.append(svg('circle', { cx: 318, cy: 64, r: 34, fill: 'url(#glow)', opacity: '0.35' }),
-        svg('circle', { cx: 318, cy: 64, r: 15, fill: '#f6f1dc' }),
-        svg('circle', { cx: 325, cy: 59, r: 13, fill: 'var(--top)' }));
+      s.append(svg('circle', { cx: 282, cy: 64, r: 34, fill: 'url(#glow)', opacity: '0.35' }),
+        svg('circle', { cx: 282, cy: 64, r: 15, fill: '#f6f1dc' }),
+        svg('circle', { cx: 289, cy: 59, r: 13, fill: 'var(--top)' }));
     } else if ((sky === 'day' || sky === 'dusk') && code < 3) {
       const y = sky === 'dusk' ? 175 : 62;
-      s.append(svg('circle', { cx: 312, cy: y, r: 60, fill: 'url(#glow)', opacity: '0.7' }),
-        svg('circle', { cx: 312, cy: y, r: 20, fill: sky === 'dusk' ? '#ffc58a' : '#fff4c7' }));
+      s.append(svg('circle', { cx: 276, cy: y, r: 60, fill: 'url(#glow)', opacity: '0.7' }),
+        svg('circle', { cx: 276, cy: y, r: 20, fill: sky === 'dusk' ? '#ffc58a' : '#fff4c7' }));
     }
     // 雲
     if (code >= 2) {
