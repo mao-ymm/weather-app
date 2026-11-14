@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f4efe6">
+  <meta name="theme-color" content="#14245e">
   <meta name="description" content="天気から今日の服装を秒で提案する服予報">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon-192.png">
@@ -11,21 +11,23 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="服予報">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>服予報</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body data-mood="mild">
+<body data-sky="night">
+  <div class="sky" aria-hidden="true"><svg id="scene" viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice"></svg></div>
+
   <main id="app">
     <header class="top">
-      <div>
-        <p class="eyebrow" id="dayLabel">服予報</p>
-        <h1 id="placeName">何着よう？</h1>
-      </div>
+      <button class="place" id="placeBtn" aria-label="場所を変更">
+        <svg viewBox="0 0 24 24" class="pin" aria-hidden="true"><path d="M12 21.5s-7-6.1-7-11.8a7 7 0 1 1 14 0c0 5.7-7 11.8-7 11.8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9.7" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <span id="placeName">服予報</span>
+      </button>
       <button class="icon-btn" id="settingsBtn" aria-label="設定">⚙︎</button>
     </header>
 
-    <section id="setup" class="panel" hidden>
+    <section id="setup" class="card" hidden>
       <h2>まずは場所を教えてください</h2>
       <p class="muted">天気に合わせて、毎日の服装を提案します。</p>
       <button class="primary wide" id="useGeo">📍 現在地を使う</button>
@@ -44,34 +46,56 @@
       <p>空模様を確認中…</p>
     </section>
 
-    <section id="error" class="panel" hidden>
+    <section id="error" class="card" hidden>
       <p id="errorMsg"></p>
       <button class="primary wide" id="retryBtn">もう一度試す</button>
       <button class="link" id="errorChangePlace">場所を変更する</button>
     </section>
 
     <section id="result" hidden>
-      <article class="outfit-card">
-        <div class="emoji" id="outfitEmoji"></div>
-        <h2 id="outfitTitle"></h2>
-        <p class="temp-line" id="tempLine"></p>
+      <div class="hero">
+        <div class="hero-temp" id="heroTemp"></div>
+        <div class="hero-cond" id="heroCond"></div>
+        <div class="hero-sub"><span id="heroHiLo"></span><span id="heroFeels"></span></div>
+      </div>
+
+      <article class="card outfit">
+        <p class="card-label" id="outfitLabel"></p>
+        <div class="outfit-main">
+          <div class="emoji" id="outfitEmoji"></div>
+          <div>
+            <h2 id="outfitTitle"></h2>
+            <p class="temp-line" id="tempLine"></p>
+          </div>
+        </div>
         <ul class="chips" id="outfitItems"></ul>
+        <ul class="extras" id="extras"></ul>
       </article>
 
-      <ul class="extras" id="extras"></ul>
+      <article class="card">
+        <p class="card-head" id="hourSummary"></p>
+        <div class="hour-scroll"><div class="hour-track" id="hourTrack"></div></div>
+      </article>
 
-      <h3 class="section-title" id="hoursTitle">外出時間帯の天気</h3>
-      <div class="hours" id="hours"></div>
+      <article class="card compare">
+        <p class="card-label" id="cmpTitle"></p>
+        <div class="cmp-row">
+          <p id="cmpText"></p>
+          <p class="cmp-value" id="cmpValue"></p>
+        </div>
+      </article>
 
-      <section class="feedback">
-        <p>今日の服装、どうだった？</p>
+      <article class="card daily"><ul id="dailyList"></ul></article>
+
+      <article class="card feedback">
+        <p class="fb-q">今日の服装、どうだった？</p>
         <div class="fb-buttons">
           <button data-fb="cold">🥶<span>寒かった</span></button>
           <button data-fb="ok">😊<span>ちょうど</span></button>
           <button data-fb="hot">🥵<span>暑かった</span></button>
         </div>
         <p class="fb-msg" id="fbMsg"></p>
-      </section>
+      </article>
 
       <p class="updated" id="updated"></p>
     </section>
