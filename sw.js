@@ -1,6 +1,6 @@
 /* 服予報 — Service Worker（アプリ本体をキャッシュしてオフラインでも起動できるようにする）
    ファイルを更新したら VERSION の数字を上げてください。 */
-const VERSION = 'fukuyoho-v2';
+const VERSION = 'fukuyoho-v3';
 const SHELL = [
   './',
   './index.html',
