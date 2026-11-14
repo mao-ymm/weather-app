@@ -13,6 +13,9 @@
   <meta name="apple-mobile-web-app-title" content="服予報">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>服予報</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-sky="night">
@@ -21,16 +24,16 @@
   <main id="app">
     <header class="top">
       <button class="place" id="placeBtn" aria-label="場所を変更">
-        <svg viewBox="0 0 24 24" class="pin" aria-hidden="true"><path d="M12 21.5s-7-6.1-7-11.8a7 7 0 1 1 14 0c0 5.7-7 11.8-7 11.8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9.7" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-        <span id="placeName">服予報</span>
+        <span class="place-sub" id="placeSub"></span>
+        <span class="place-name" id="placeName">服予報</span>
       </button>
-      <button class="icon-btn" id="settingsBtn" aria-label="設定">⚙︎</button>
+      <button class="icon-btn" id="settingsBtn" aria-label="設定"></button>
     </header>
 
-    <section id="setup" class="card" hidden>
-      <h2>まずは場所を教えてください</h2>
+    <section id="setup" class="card pad" hidden>
+      <h2>場所を設定</h2>
       <p class="muted">天気に合わせて、毎日の服装を提案します。</p>
-      <button class="primary wide" id="useGeo">📍 現在地を使う</button>
+      <button class="primary wide" id="useGeo">現在地を使う</button>
       <p class="or">または</p>
       <form id="searchForm" class="search">
         <input id="searchInput" type="search" placeholder="市区町村名（例：渋谷）" autocomplete="off" enterkeyhint="search">
@@ -38,15 +41,14 @@
       </form>
       <p class="muted small" id="setupMsg"></p>
       <ul id="searchResults" class="results"></ul>
-      <button class="link" id="cancelSetup" hidden>← 戻る</button>
+      <button class="link" id="cancelSetup" hidden>戻る</button>
     </section>
 
     <section id="loading" class="loading" hidden>
       <div class="spinner" aria-hidden="true"></div>
-      <p>空模様を確認中…</p>
     </section>
 
-    <section id="error" class="card" hidden>
+    <section id="error" class="card pad" hidden>
       <p id="errorMsg"></p>
       <button class="primary wide" id="retryBtn">もう一度試す</button>
       <button class="link" id="errorChangePlace">場所を変更する</button>
@@ -56,16 +58,22 @@
       <div class="hero">
         <div class="hero-temp" id="heroTemp"></div>
         <div class="hero-cond" id="heroCond"></div>
-        <div class="hero-sub"><span id="heroHiLo"></span><span id="heroFeels"></span></div>
+        <div class="hero-hilo" id="heroHiLo"></div>
       </div>
 
       <article class="card outfit">
-        <p class="card-label" id="outfitLabel"></p>
+        <div class="card-top">
+          <p class="card-label" id="outfitLabel"></p>
+          <div class="seg-mini" role="tablist" aria-label="表示する日">
+            <button data-day="today" role="tab">今日</button>
+            <button data-day="tomorrow" role="tab">明日</button>
+          </div>
+        </div>
         <div class="outfit-main">
-          <div class="emoji" id="outfitEmoji"></div>
+          <div class="badge" id="outfitIcon"></div>
           <div>
             <h2 id="outfitTitle"></h2>
-            <p class="temp-line" id="tempLine"></p>
+            <p class="outfit-sub" id="outfitSub"></p>
           </div>
         </div>
         <ul class="chips" id="outfitItems"></ul>
@@ -73,26 +81,35 @@
       </article>
 
       <article class="card">
-        <p class="card-head" id="hourSummary"></p>
+        <p class="card-label" id="hourLabel"></p>
+        <p class="card-summary" id="hourSummary"></p>
         <div class="hour-scroll"><div class="hour-track" id="hourTrack"></div></div>
       </article>
 
-      <article class="card compare">
-        <p class="card-label" id="cmpTitle"></p>
-        <div class="cmp-row">
-          <p id="cmpText"></p>
-          <p class="cmp-value" id="cmpValue"></p>
-        </div>
+      <article class="card">
+        <p class="card-label" id="dailyLabel"></p>
+        <ul class="daily" id="dailyList"></ul>
       </article>
 
-      <article class="card daily"><ul id="dailyList"></ul></article>
+      <div class="grid2">
+        <article class="card tile">
+          <p class="card-label" id="cmpLabel"></p>
+          <p class="tile-value" id="cmpValue"></p>
+          <p class="tile-text" id="cmpText"></p>
+        </article>
+        <article class="card tile">
+          <p class="card-label" id="feelsLabel"></p>
+          <p class="tile-value" id="feelsValue"></p>
+          <p class="tile-text" id="feelsText"></p>
+        </article>
+      </div>
 
-      <article class="card feedback">
+      <article class="card pad feedback">
         <p class="fb-q">今日の服装、どうだった？</p>
-        <div class="fb-buttons">
-          <button data-fb="cold">🥶<span>寒かった</span></button>
-          <button data-fb="ok">😊<span>ちょうど</span></button>
-          <button data-fb="hot">🥵<span>暑かった</span></button>
+        <div class="segmented" id="fbButtons">
+          <button data-fb="cold">寒かった</button>
+          <button data-fb="ok">ちょうどいい</button>
+          <button data-fb="hot">暑かった</button>
         </div>
         <p class="fb-msg" id="fbMsg"></p>
       </article>
@@ -126,7 +143,7 @@
       </fieldset>
       <p class="muted small" id="learnedHint"></p>
       <button type="button" class="link" id="resetLearned">学習した補正をリセット</button>
-      <button type="button" class="secondary wide" id="changePlace">📍 場所を変更</button>
+      <button type="button" class="secondary wide" id="changePlace">場所を変更</button>
       <div class="dialog-actions">
         <button value="cancel" class="secondary">閉じる</button>
         <button value="save" class="primary">保存</button>
