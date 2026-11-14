@@ -33,6 +33,13 @@
   }
 
   /* ---------- データ取得 ---------- */
+  // 応答がないときに読み込み中のまま止まらないよう、12秒で打ち切る
+  function fetchWithTimeout(url, ms = 12000) {
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), ms);
+    return fetch(url, { signal: ac.signal }).finally(() => clearTimeout(timer));
+  }
+
   async function fetchForecast(loc) {
     const params = new URLSearchParams({
       latitude: loc.lat,
@@ -44,7 +51,7 @@
       past_days: '1',
       forecast_days: '3',
     });
-    const res = await fetch('https://api.open-meteo.com/v1/forecast?' + params);
+    const res = await fetchWithTimeout('https://api.open-meteo.com/v1/forecast?' + params);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     return res.json();
   }
@@ -75,7 +82,7 @@
 
   async function searchCity(q) {
     const params = new URLSearchParams({ name: q, count: '8', language: 'ja', format: 'json' });
-    const res = await fetch('https://geocoding-api.open-meteo.com/v1/search?' + params);
+    const res = await fetchWithTimeout('https://geocoding-api.open-meteo.com/v1/search?' + params);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     return (await res.json()).results || [];
   }
